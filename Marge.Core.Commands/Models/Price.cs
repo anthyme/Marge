@@ -36,9 +36,12 @@ namespace Marge.Core.Commands.Models
 
             public State(object[] events)
             {
-                foreach (dynamic evt in events)
+                foreach (var evt in events)
                 {
-                    Apply(evt);
+                    switch (evt)
+                    {
+                        case PriceCreated x: Apply(x); break;
+                    }
                 }
             }
 
