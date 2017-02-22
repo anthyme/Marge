@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marge.Core.Queries", "Marge
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marge.Tests", "Marge.Tests\Marge.Tests.csproj", "{029B0E94-6BF6-46B7-91D5-D32DE9E2894C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marge.Common", "Marge.Common\Marge.Common.csproj", "{8F0A81A9-CDF5-483E-8626-EB7EFA844E54}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,18 @@ Global
 		{029B0E94-6BF6-46B7-91D5-D32DE9E2894C}.Release|x64.Build.0 = Release|Any CPU
 		{029B0E94-6BF6-46B7-91D5-D32DE9E2894C}.Release|x86.ActiveCfg = Release|Any CPU
 		{029B0E94-6BF6-46B7-91D5-D32DE9E2894C}.Release|x86.Build.0 = Release|Any CPU
+		{8F0A81A9-CDF5-483E-8626-EB7EFA844E54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F0A81A9-CDF5-483E-8626-EB7EFA844E54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F0A81A9-CDF5-483E-8626-EB7EFA844E54}.Debug|x64.ActiveCfg = Debug|x64
+		{8F0A81A9-CDF5-483E-8626-EB7EFA844E54}.Debug|x64.Build.0 = Debug|x64
+		{8F0A81A9-CDF5-483E-8626-EB7EFA844E54}.Debug|x86.ActiveCfg = Debug|x86
+		{8F0A81A9-CDF5-483E-8626-EB7EFA844E54}.Debug|x86.Build.0 = Debug|x86
+		{8F0A81A9-CDF5-483E-8626-EB7EFA844E54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F0A81A9-CDF5-483E-8626-EB7EFA844E54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F0A81A9-CDF5-483E-8626-EB7EFA844E54}.Release|x64.ActiveCfg = Release|x64
+		{8F0A81A9-CDF5-483E-8626-EB7EFA844E54}.Release|x64.Build.0 = Release|x64
+		{8F0A81A9-CDF5-483E-8626-EB7EFA844E54}.Release|x86.ActiveCfg = Release|x86
+		{8F0A81A9-CDF5-483E-8626-EB7EFA844E54}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
