@@ -16,12 +16,12 @@ namespace Marge.Core.Commands
 
     public class ChangeDiscountCommand
     {
-        public Guid  Id { get; }
+        public Guid  PriceId { get; }
         public int Discount { get; }
 
         public ChangeDiscountCommand(Guid id, int discount)
         {
-            Id = id;
+            PriceId = id;
             Discount = discount;
         }
     }

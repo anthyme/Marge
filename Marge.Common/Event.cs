@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Marge.Common
 {
-    public class Event<T>
+    public struct Event<T>
     {
         public Guid Id { get; }
         public Guid StreamId { get; }
