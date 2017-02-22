@@ -7,7 +7,9 @@ namespace Marge.Core.Queries
 {
     public interface IPriceRepository
     {
-        void Save(Price price);
+        void Insert(Price price);
+
+        void UpdateDiscount(Price price); 
 
         Price Get(Guid id);
     }

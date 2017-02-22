@@ -16,7 +16,7 @@ namespace Marge.Core.Queries
 
         public Price GetPrice(Guid id)
         {
-            throw new NotImplementedException();
+            return _priceRepository.Get(id);
         }
     }
 }

@@ -3,7 +3,7 @@
     public struct DiscountChanged
     {
         public decimal Price { get; }
-        public decimal Discount { get; }
+        public int Discount { get; }
         public decimal Profit { get; }
 
         public DiscountChanged(decimal price, int discount, decimal profit)

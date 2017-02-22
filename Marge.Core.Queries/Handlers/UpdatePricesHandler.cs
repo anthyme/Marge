@@ -18,7 +18,12 @@ namespace Marge.Core.Queries.Handlers
 
         public void Handle(Event<PriceCreated> evt)
         {
-            _priceRepository.Save(new Price(evt.Id, evt.Payload.Price, evt.Payload.Discount, evt.Payload.Profit));
+            _priceRepository.Insert(new Price(evt.Id, evt.Payload.Price, evt.Payload.Discount, evt.Payload.Profit));
+        }
+
+        public void Handle(Event<DiscountChanged> evt)
+        {
+            _priceRepository.UpdateDiscount(new Price(evt.Id, evt.Payload.Price, evt.Payload.Discount, evt.Payload.Profit));
         }
     }
 }
