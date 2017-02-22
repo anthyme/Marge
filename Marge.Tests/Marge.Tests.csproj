@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="Core\CommandBusTest.cs" />
     <Compile Include="Core\Commands\PriceTest.cs" />
+    <Compile Include="Core\Queries\PriceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +77,10 @@
     <ProjectReference Include="..\Marge.Core.Commands\Marge.Core.Commands.csproj">
       <Project>{C2DE9445-6EB3-4FE2-BB23-45095556673B}</Project>
       <Name>Marge.Core.Commands</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Marge.Core.Queries\Marge.Core.Queries.csproj">
+      <Project>{4cf19b4d-55f1-4873-8c9b-bfff0d87d273}</Project>
+      <Name>Marge.Core.Queries</Name>
     </ProjectReference>
     <ProjectReference Include="..\Marge.Infrastructure\Marge.Infrastructure.csproj">
       <Project>{168EC726-8E49-4AAB-B4BB-FD42624BF363}</Project>
