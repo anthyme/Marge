@@ -14,25 +14,25 @@ namespace Marge.Tests.Core.Queries
         [Fact]
         public void GivenPriceCreatedThenVerifySave()
         {
-            var priceRepository = Substitute.For<IPriceRepository>();
+            var priceRepository = Substitute.For<PriceRepository>();
             var handler = new UpdatePricesHandler(priceRepository);
             var evt = new PriceCreated(1000, 700, 0, 0.3m);
             var wrap = new EventWrapper(Guid.NewGuid(), evt);
             handler.Handle(wrap, evt);
 
-            priceRepository.Received().Insert(new Price(wrap.StreamId, evt.Price, evt.Discount, evt.Profit));
+            priceRepository.Received().Create(new Price(wrap.StreamId, evt.Price, evt.Discount, evt.Profit));
         }
 
         [Fact]
         public void GivenDiscountChangedThenVerifyUpdateDiscount()
         {
-            var priceRepository = Substitute.For<IPriceRepository>();
+            var priceRepository = Substitute.For<PriceRepository>();
             var handler = new UpdatePricesHandler(priceRepository);
             var evt = new DiscountChanged(1000, 0, 0.3m);
             var wrap = new EventWrapper(Guid.NewGuid(), evt);
             handler.Handle(wrap, evt);
 
-            priceRepository.Received().UpdateDiscount(new Price(wrap.StreamId, evt.Price, evt.Discount, evt.Profit));
+            priceRepository.Received().Update(new Price(wrap.StreamId, evt.Price, evt.Discount, evt.Profit));
         }
     }
 }

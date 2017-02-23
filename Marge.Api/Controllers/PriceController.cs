@@ -38,10 +38,11 @@ namespace Marge.Api.Controllers
             commandBus.Publish(command);
         }
 
-        [HttpPut("{priceId}")]
-        public void Put(Guid priceId, [FromBody]ChangeDiscountCommand command)
+        //TODO: fix that
+        [HttpPut("{id}")]
+        public void Put(Guid id, [FromBody]ChangeDiscountCommand command)
         {
-            commandBus.Publish(new ChangeDiscountCommand(priceId, command.Discount));
+            commandBus.Publish(new ChangeDiscountCommand(id, command.Discount));
         }
 
         [HttpDelete("{id}")]

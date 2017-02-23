@@ -6,21 +6,21 @@ namespace Marge.Core.Queries.Handlers
 {
     public class UpdatePricesHandler
     {
-        private readonly IPriceRepository _priceRepository;
+        private readonly PriceRepository priceSaver;
 
-        public UpdatePricesHandler(IPriceRepository priceRepository)
+        public UpdatePricesHandler(PriceRepository priceSaver)
         {
-            _priceRepository = priceRepository;
+            this.priceSaver = priceSaver;
         }
 
         public void Handle(EventWrapper wrapper, PriceCreated evt)
         {
-            _priceRepository.Insert(new Price(wrapper.StreamId, evt.Price, evt.Discount, evt.Profit));
+            priceSaver.Create(new Price(wrapper.StreamId, evt.Price, evt.Discount, evt.Profit));
         }
 
         public void Handle(EventWrapper wrapper, DiscountChanged evt)
         {
-            _priceRepository.UpdateDiscount(new Price(wrapper.StreamId, evt.Price, evt.Discount, evt.Profit));
+            priceSaver.Update(new Price(wrapper.StreamId, evt.Price, evt.Discount, evt.Profit));
         }
     }
 }

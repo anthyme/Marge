@@ -1,12 +1,13 @@
-﻿using Marge.Common;
+﻿using System;
+using Marge.Common;
 using Marge.Common.Events;
 using Marge.Core.Commands;
+using Marge.Core.Commands.Handlers;
 using Marge.Infrastructure;
 using NSubstitute;
-using System;
 using Xunit;
 
-namespace Marge.Tests.Core
+namespace Marge.Tests.Core.Commands
 {
     public class CommandBusTest
     {
@@ -17,7 +18,7 @@ namespace Marge.Tests.Core
         {
             bus = new CommandBus();
             eventStore = Substitute.For<IEventStore>();
-            var commandHandler = new PriceCommandHandler(eventStore);
+            var commandHandler = new PriceCommandHandler(eventStore, new EventBus());
             bus.Subscribe<ChangeDiscountCommand>(commandHandler);
             bus.Subscribe<CreatePriceCommand>(commandHandler);
         }
@@ -37,36 +38,38 @@ namespace Marge.Tests.Core
         [Fact]
         public void WhenChangeDiscountThenDiscountChanged()
         {
-            var given = new [] { new EventWrapper(Guid.NewGuid(), new PriceCreated(1000, 800, 0, 0.2m)) };
+            var id = Guid.NewGuid();
+            var given = new[] { new EventWrapper(id, new PriceCreated(1000, 800, 0, 0.2m)) };
 
             eventStore.RetrieveAllEvents(Arg.Any<Guid>()).Returns(given);
 
-            var command = new ChangeDiscountCommand(Guid.NewGuid(), 10);
+            var command = new ChangeDiscountCommand(id, 10);
 
             var expected = new DiscountChanged(900, 10, 0.1111111111111111111111111111m);
 
             bus.Publish(command);
 
-            eventStore.Received().Save(Arg.Is<EventWrapper>(x => x.Event.Equals(expected)));
+            eventStore.Received().Save(new EventWrapper(id, expected));
         }
 
         [Fact]
         public void WhenChangeDiscount2ThenDiscountChanged()
         {
-            var given = new [] {
-                new EventWrapper(Guid.NewGuid(), new PriceCreated(1000, 800, 0, 0.2m)),
-                new EventWrapper(Guid.NewGuid(), new DiscountChanged(900, 10, 0.1111111111111111111111111111m)),
+            var id = Guid.NewGuid();
+            var given = new[] {
+                new EventWrapper(id, new PriceCreated(1000, 800, 0, 0.2m)),
+                new EventWrapper(id, new DiscountChanged(900, 10, 0.1111111111111111111111111111m)),
             };
 
             eventStore.RetrieveAllEvents(Arg.Any<Guid>()).Returns(given);
 
-            var command = new ChangeDiscountCommand(Guid.NewGuid(), 0);
+            var command = new ChangeDiscountCommand(id, 0);
 
             var expected = new DiscountChanged(1000, 0, 0.2m);
 
             bus.Publish(command);
 
-            eventStore.Received().Save(Arg.Is<EventWrapper>(x => x.Event.Equals(expected)));
+            eventStore.Received().Save(new EventWrapper(id, expected));
         }
     }
 }

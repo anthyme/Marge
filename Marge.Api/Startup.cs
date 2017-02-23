@@ -1,4 +1,9 @@
-﻿using Marge.Core.Commands;
+﻿using System;
+using Marge.Common.Events;
+using Marge.Core.Commands;
+using Marge.Core.Commands.Handlers;
+using Marge.Core.Queries;
+using Marge.Core.Queries.Handlers;
 using Marge.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +15,8 @@ namespace Marge.Api
 {
     public class Startup
     {
+        private static IDisposable[] subscriptions;
+
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -30,7 +37,13 @@ namespace Marge.Api
 
             services.AddSingleton<IEventStore, InMemoryEventStore>();
             services.AddSingleton<CommandBus>();
+            services.AddSingleton<EventBus>();
             services.AddSingleton<PriceCommandHandler>();
+            services.AddSingleton<UpdatePricesHandler>();
+
+            var priceRepository = new PriceRepository();
+            services.AddSingleton<PriceRepository>(priceRepository);
+            services.AddSingleton<IPriceQuery>(priceRepository);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,6 +55,7 @@ namespace Marge.Api
             app.UseMvc();
 
             ConfigureCommandBus(app);
+            ConfigureQueryHandlers(app);
         }
 
         private static void ConfigureCommandBus(IApplicationBuilder app)
@@ -50,6 +64,17 @@ namespace Marge.Api
             var commandHandler = app.ApplicationServices.GetService<PriceCommandHandler>();
             commandBus.Subscribe<ChangeDiscountCommand>(commandHandler);
             commandBus.Subscribe<CreatePriceCommand>(commandHandler);
+        }
+
+        private static void ConfigureQueryHandlers(IApplicationBuilder app)
+        {
+            var updatePricesHandler = app.ApplicationServices.GetService<UpdatePricesHandler>();
+            var eventBus = app.ApplicationServices.GetService<EventBus>();
+            subscriptions = new[]
+            {
+                eventBus.Subscribe<DiscountChanged>(updatePricesHandler.Handle),
+                eventBus.Subscribe<PriceCreated>(updatePricesHandler.Handle),
+            };
         }
     }
 }

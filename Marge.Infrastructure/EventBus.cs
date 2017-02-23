@@ -7,11 +7,9 @@ namespace Marge.Infrastructure
 {
     public class EventBus
     {
-        public static EventBus Instance => new EventBus();
-
         private Subject<EventWrapper> subject = new Subject<EventWrapper>();
 
-        public void Publish<T>(EventWrapper @event)
+        public void Publish(EventWrapper @event)
         {
             subject.OnNext(@event);
         }

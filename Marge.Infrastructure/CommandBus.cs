@@ -6,8 +6,6 @@ namespace Marge.Infrastructure
 {
     public class CommandBus
     {
-        public static CommandBus Instance => new CommandBus();
-
         private readonly Subject<object> subject = new Subject<object>();
 
         public void Publish(object command)

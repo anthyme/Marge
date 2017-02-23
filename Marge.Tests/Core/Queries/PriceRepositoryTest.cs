@@ -25,7 +25,7 @@ namespace Marge.Tests.Core.Queries
                 new Price(Guid.NewGuid(), 11, 12, 13),
             };
 
-            prices.ToList().ForEach(sut.Insert);
+            prices.ToList().ForEach(sut.Create);
 
 
             Check.That(sut.RetrieveAll()).ContainsExactly(prices);
@@ -41,7 +41,7 @@ namespace Marge.Tests.Core.Queries
                 new Price(Guid.NewGuid(), 11, 12, 13),
             };
 
-            prices.ToList().ForEach(sut.Insert);
+            prices.ToList().ForEach(sut.Create);
 
 
             Check.That(sut.RetrieveById(prices[1].Id)).Equals(prices[1]);
@@ -57,11 +57,11 @@ namespace Marge.Tests.Core.Queries
                 new Price(Guid.NewGuid(), 11, 12, 13),
             };
 
-            prices.ToList().ForEach(sut.Insert);
+            prices.ToList().ForEach(sut.Create);
 
             var update = new Price(id, 12, 22, 33);
 
-            sut.UpdateDiscount(update);
+            sut.Update(update);
 
             Check.That(sut.RetrieveById(id)).Equals(update);
         }
