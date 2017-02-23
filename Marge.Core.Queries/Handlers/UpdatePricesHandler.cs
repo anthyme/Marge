@@ -1,9 +1,6 @@
 ﻿using Marge.Common;
 using Marge.Common.Events;
 using Marge.Core.Queries.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Marge.Core.Queries.Handlers
 {

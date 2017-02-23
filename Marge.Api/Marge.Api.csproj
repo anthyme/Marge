@@ -19,6 +19,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Marge.Core.Commands\Marge.Core.Commands.csproj" />
+    <ProjectReference Include="..\Marge.Core.Queries\Marge.Core.Queries.csproj" />
   </ItemGroup>
 
 </Project>

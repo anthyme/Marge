@@ -34,6 +34,5 @@ namespace Marge.Tests.Core.Queries
 
             priceRepository.Received().UpdateDiscount(new Price(wrap.StreamId, evt.Price, evt.Discount, evt.Profit));
         }
-
     }
 }

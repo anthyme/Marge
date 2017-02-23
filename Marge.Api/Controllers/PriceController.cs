@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Marge.Core.Commands;
+using Marge.Core.Queries;
+using Marge.Core.Queries.Models;
 using Marge.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,22 +12,24 @@ namespace Marge.Api.Controllers
     public class PriceController : Controller
     {
         private readonly CommandBus commandBus;
+        private readonly IPriceQuery priceQuery;
 
-        public PriceController(CommandBus commandBus)
+        public PriceController(CommandBus commandBus, IPriceQuery priceQuery)
         {
             this.commandBus = commandBus;
+            this.priceQuery = priceQuery;
         }
 
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<Price> Get()
         {
-            return new string[] { "value1", "value2" };
+            return priceQuery.RetrieveAll();
         }
 
         [HttpGet("{id}")]
-        public string Get(int id)
+        public Price Get(Guid id)
         {
-            return "value";
+            return priceQuery.RetrieveById(id);
         }
 
         [HttpPost]
