@@ -35,7 +35,7 @@ namespace Marge.Core.Commands.Models
             public decimal Cost { get; private set; }
             public decimal TargetPrice { get; private set; }
 
-            public State(object[] events)
+            public State(IEvent[] events)
             {
                 foreach (var evt in events)
                 {

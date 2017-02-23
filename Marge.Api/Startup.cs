@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Marge.Core.Commands;
+using Marge.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -29,6 +27,10 @@ namespace Marge.Api
         {
             // Add framework services.
             services.AddMvc();
+
+            services.AddSingleton<IEventStore, InMemoryEventStore>();
+            services.AddSingleton<CommandBus>();
+            services.AddSingleton<PriceCommandHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,6 +40,16 @@ namespace Marge.Api
             loggerFactory.AddDebug();
 
             app.UseMvc();
+
+            ConfigureCommandBus(app);
+        }
+
+        private static void ConfigureCommandBus(IApplicationBuilder app)
+        {
+            var commandBus = app.ApplicationServices.GetService<CommandBus>();
+            var commandHandler = app.ApplicationServices.GetService<PriceCommandHandler>();
+            commandBus.Subscribe<ChangeDiscountCommand>(commandHandler);
+            commandBus.Subscribe<CreatePriceCommand>(commandHandler);
         }
     }
 }
