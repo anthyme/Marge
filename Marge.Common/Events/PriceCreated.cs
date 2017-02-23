@@ -1,6 +1,6 @@
 ﻿namespace Marge.Common.Events
 {
-    public struct PriceCreated
+    public struct PriceCreated : IEvent
     {
         public decimal Price { get; }
         public decimal Cost { get; }

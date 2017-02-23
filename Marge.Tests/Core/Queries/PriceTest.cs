@@ -16,10 +16,11 @@ namespace Marge.Tests.Core.Queries
         {
             var priceRepository = Substitute.For<IPriceRepository>();
             var handler = new UpdatePricesHandler(priceRepository);
-            var evt = new Event<PriceCreated>(Guid.NewGuid(), Guid.NewGuid(), DateTime.Now, new PriceCreated(1000, 700, 0, 0.3m));
-            handler.Handle(evt);
+            var evt = new PriceCreated(1000, 700, 0, 0.3m);
+            var wrap = new EventWrapper(Guid.NewGuid(), evt);
+            handler.Handle(wrap, evt);
 
-            priceRepository.Received().Insert(new Price(evt.Id, evt.Payload.Price, evt.Payload.Discount, evt.Payload.Profit));
+            priceRepository.Received().Insert(new Price(wrap.StreamId, evt.Price, evt.Discount, evt.Profit));
         }
 
         [Fact]
@@ -27,10 +28,11 @@ namespace Marge.Tests.Core.Queries
         {
             var priceRepository = Substitute.For<IPriceRepository>();
             var handler = new UpdatePricesHandler(priceRepository);
-            var evt = new Event<DiscountChanged>(Guid.NewGuid(), Guid.NewGuid(), DateTime.Now, new DiscountChanged(1000, 0, 0.3m));
-            handler.Handle(evt);
+            var evt = new DiscountChanged(1000, 0, 0.3m);
+            var wrap = new EventWrapper(Guid.NewGuid(), evt);
+            handler.Handle(wrap, evt);
 
-            priceRepository.Received().UpdateDiscount(new Price(evt.Id, evt.Payload.Price, evt.Payload.Discount, evt.Payload.Profit));
+            priceRepository.Received().UpdateDiscount(new Price(wrap.StreamId, evt.Price, evt.Discount, evt.Profit));
         }
 
     }

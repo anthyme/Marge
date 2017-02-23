@@ -1,9 +1,10 @@
-﻿using Events = System.Collections.Generic.IEnumerable<object>;
+﻿using Marge.Common;
+using System.Collections.Generic;
 
 namespace Marge.Infrastructure
 {
     public interface IHandle<TCommand>
     {
-        Events Handle(TCommand command);
+        IEnumerable<EventWrapper> Handle(TCommand command);
     }
 }

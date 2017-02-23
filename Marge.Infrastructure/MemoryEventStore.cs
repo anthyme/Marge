@@ -1,25 +1,13 @@
 ﻿using System;
 using Marge.Common;
-using EventWithPayloads = System.Collections.Generic.IEnumerable<object>;
+using System.Collections.Generic;
 
 namespace Marge.Infrastructure
 {
     public interface IEventStore
     {
-        EventWithPayloads RetrieveAllEvents(Guid id);
-        void Save<T>(Event<T> evt);
+        IEnumerable<EventWrapper> RetrieveAllEvents(Guid id);
+        void Save(EventWrapper evt);
     }
 
-    public class MemoryEventStore : IEventStore
-    {
-        public EventWithPayloads RetrieveAllEvents(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Save<T>(Event<T> evt)
-        {
-            throw new NotImplementedException();
-        }
-    }
 }

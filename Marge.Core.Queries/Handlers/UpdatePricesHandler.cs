@@ -16,14 +16,14 @@ namespace Marge.Core.Queries.Handlers
             _priceRepository = priceRepository;
         }
 
-        public void Handle(Event<PriceCreated> evt)
+        public void Handle(EventWrapper wrapper, PriceCreated evt)
         {
-            _priceRepository.Insert(new Price(evt.Id, evt.Payload.Price, evt.Payload.Discount, evt.Payload.Profit));
+            _priceRepository.Insert(new Price(wrapper.StreamId, evt.Price, evt.Discount, evt.Profit));
         }
 
-        public void Handle(Event<DiscountChanged> evt)
+        public void Handle(EventWrapper wrapper, DiscountChanged evt)
         {
-            _priceRepository.UpdateDiscount(new Price(evt.Id, evt.Payload.Price, evt.Payload.Discount, evt.Payload.Profit));
+            _priceRepository.UpdateDiscount(new Price(wrapper.StreamId, evt.Price, evt.Discount, evt.Profit));
         }
     }
 }

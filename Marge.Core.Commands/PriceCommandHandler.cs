@@ -1,6 +1,9 @@
-﻿using Marge.Core.Commands.Models;
+﻿using Marge.Common;
+using Marge.Core.Commands.Models;
 using Marge.Infrastructure;
-using Events = System.Collections.Generic.IEnumerable<object>;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Marge.Core.Commands
 {
@@ -13,15 +16,21 @@ namespace Marge.Core.Commands
             this.eventStore = eventStore;
         }
 
-        public Events Handle(ChangeDiscountCommand command)
+        public IEnumerable<EventWrapper> Handle(ChangeDiscountCommand command)
         {
-            var price = new Price(eventStore.RetrieveAllEvents(command.PriceId));
-            return price.ChangeDiscount(command);
+            var price = new Price(eventStore.RetrieveAllEvents(command.PriceId).Select(x => x.Event).ToArray());
+            var payloads = price.ChangeDiscount(command);
+            var events = payloads.Select(x => new EventWrapper(Guid.NewGuid(), x)).ToList();
+            events.ForEach(eventStore.Save);
+            return events;
         }
 
-        public Events Handle(CreatePriceCommand command)
+        public IEnumerable<EventWrapper> Handle(CreatePriceCommand command)
         {
-            return Price.Create(command);
+            var payloads = Price.Create(command);
+            var events = payloads.Select(x => new EventWrapper(Guid.NewGuid(), x)).ToList();
+            events.ForEach(eventStore.Save);
+            return events;
         }
     }
 }

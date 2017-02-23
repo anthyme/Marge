@@ -1,5 +1,6 @@
-﻿using Marge.Common.Events;
-using Events = System.Collections.Generic.IEnumerable<object>;
+﻿using Marge.Common;
+using Marge.Common.Events;
+using System.Collections.Generic;
 
 namespace Marge.Core.Commands.Models
 {
@@ -8,17 +9,17 @@ namespace Marge.Core.Commands.Models
     {
         private readonly State state;
 
-        public Price(params object[] events)
+        public Price(params IEvent[] events)
         {
             state = new State(events);
         }
 
-        public static Events Create(CreatePriceCommand command)
+        public static IEnumerable<IEvent> Create(CreatePriceCommand command)
         {
             yield return new PriceCreated(command.TargetPrice, command.Cost, 0, ComputeProfit(command.TargetPrice, command.Cost));
         }
 
-        public Events ChangeDiscount(ChangeDiscountCommand command)
+        public IEnumerable<IEvent> ChangeDiscount(ChangeDiscountCommand command)
         {
             var price = state.TargetPrice - (state.TargetPrice * 0.01m * command.Discount);
             yield return new DiscountChanged(price, command.Discount, ComputeProfit(price, state.Cost));

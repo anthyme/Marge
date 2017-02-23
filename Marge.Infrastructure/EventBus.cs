@@ -9,16 +9,16 @@ namespace Marge.Infrastructure
     {
         public static EventBus Instance => new EventBus();
 
-        private Subject<object> subject = new Subject<object>();
+        private Subject<EventWrapper> subject = new Subject<EventWrapper>();
 
-        public void Publish<T>(Event<T> @event)
+        public void Publish<T>(EventWrapper @event)
         {
             subject.OnNext(@event);
         }
 
-        public IDisposable Subscribe<T>(Action<Event<T>> subscription)
+        public IDisposable Subscribe<T>(Action<EventWrapper, T> subscription)
         {
-            return subject.OfType<Event<T>>().Subscribe(subscription);
+            return subject.Where(x => x.Event is T).Subscribe(x => subscription(x, (T)x.Event));
         }
     }
 }
