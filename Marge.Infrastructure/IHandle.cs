@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace Marge.Infrastructure
 {
-    public interface IHandle<TCommand>
+    public interface IHandle<in TCommand>
     {
-        IEnumerable<EventWrapper> Handle(TCommand command);
+        IEnumerable<IEvent> Handle(TCommand command, IEnumerable<IEvent> events);
     }
 }

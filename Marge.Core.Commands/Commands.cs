@@ -1,4 +1,5 @@
 ﻿using System;
+using Marge.Infrastructure;
 
 namespace Marge.Core.Commands
 {
@@ -14,14 +15,16 @@ namespace Marge.Core.Commands
         }
     }
 
-    public class ChangeDiscountCommand
+    public class ChangeDiscountCommand : IAggregateId
     {
+        Guid IAggregateId.AggregateId => PriceId;
+
         public Guid  PriceId { get; }
         public int Discount { get; }
 
-        public ChangeDiscountCommand(Guid id, int discount)
+        public ChangeDiscountCommand(Guid priceId, int discount)
         {
-            PriceId = id;
+            PriceId = priceId;
             Discount = discount;
         }
     }

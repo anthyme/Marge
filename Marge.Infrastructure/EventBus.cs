@@ -5,7 +5,13 @@ using System.Reactive.Linq;
 
 namespace Marge.Infrastructure
 {
-    public class EventBus
+    public interface IEventBus
+    {
+        void Publish(EventWrapper @event);
+        IDisposable Subscribe<T>(Action<EventWrapper, T> subscription);
+    }
+
+    public class EventBus : IEventBus
     {
         private Subject<EventWrapper> subject = new Subject<EventWrapper>();
 

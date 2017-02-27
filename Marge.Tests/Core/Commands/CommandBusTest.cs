@@ -16,9 +16,9 @@ namespace Marge.Tests.Core.Commands
 
         public CommandBusTest()
         {
-            bus = new CommandBus();
             eventStore = Substitute.For<IEventStore>();
-            var commandHandler = new PriceCommandHandler(eventStore, new EventBus());
+            bus = new CommandBus(new EventAggregateCommandHandler(eventStore, new EventBus()));
+            var commandHandler = new PriceCommandHandler();
             bus.Subscribe<ChangeDiscountCommand>(commandHandler);
             bus.Subscribe<CreatePriceCommand>(commandHandler);
         }
