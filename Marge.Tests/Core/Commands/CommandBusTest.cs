@@ -13,11 +13,17 @@ namespace Marge.Tests.Core.Commands
     {
         private CommandBus bus;
         private IEventStore eventStore;
+        private IEventStoreStream eventStoreStream;
+        private IEventBus eventBus;
 
         public CommandBusTest()
         {
             eventStore = Substitute.For<IEventStore>();
-            bus = new CommandBus(new EventAggregateCommandHandler(eventStore, new EventBus()));
+            eventBus = Substitute.For<IEventBus>();
+            eventStoreStream = Substitute.For<IEventStoreStream>();
+            eventStore.CreateStream(Arg.Any<Guid>()).Returns(x => eventStoreStream);
+            eventStore.OpenStream(Arg.Any<Guid>()).Returns(x => eventStoreStream);
+            bus = new CommandBus(new EventAggregateCommandHandler(eventStore, eventBus));
             var commandHandler = new PriceCommandHandler();
             bus.Subscribe<ChangeDiscountCommand>(commandHandler);
             bus.Subscribe<CreatePriceCommand>(commandHandler);
@@ -32,7 +38,10 @@ namespace Marge.Tests.Core.Commands
 
             var expected = new PriceCreated(command.TargetPrice, command.Cost, 0, 0.2m);
 
-            eventStore.Received().Save(Arg.Is<EventWrapper>(x => x.Event.Equals(expected)));
+            eventStore.Received().CreateStream(Arg.Any<Guid>());
+            eventStoreStream.Received().Add(expected);
+            eventBus.Received().Publish(Arg.Is<EventWrapper>(x => x.Event.Equals(expected)));
+            eventStoreStream.Received().CommitChanges();
         }
 
         [Fact]
@@ -41,7 +50,7 @@ namespace Marge.Tests.Core.Commands
             var id = Guid.NewGuid();
             var given = new[] { new EventWrapper(id, new PriceCreated(1000, 800, 0, 0.2m)) };
 
-            eventStore.RetrieveAllEvents(Arg.Any<Guid>()).Returns(given);
+            eventStoreStream.CommittedEvents.Returns(given);
 
             var command = new ChangeDiscountCommand(id, 10);
 
@@ -49,7 +58,10 @@ namespace Marge.Tests.Core.Commands
 
             bus.Publish(command);
 
-            eventStore.Received().Save(new EventWrapper(id, expected));
+            eventStore.Received().OpenStream(id);
+            eventStoreStream.Received().Add(expected);
+            eventBus.Received().Publish(Arg.Is<EventWrapper>(x => x.Event.Equals(expected)));
+            eventStoreStream.Received().CommitChanges();
         }
 
         [Fact]
@@ -61,7 +73,7 @@ namespace Marge.Tests.Core.Commands
                 new EventWrapper(id, new DiscountChanged(900, 10, 0.1111111111111111111111111111m)),
             };
 
-            eventStore.RetrieveAllEvents(Arg.Any<Guid>()).Returns(given);
+            eventStoreStream.CommittedEvents.Returns(given);
 
             var command = new ChangeDiscountCommand(id, 0);
 
@@ -69,7 +81,10 @@ namespace Marge.Tests.Core.Commands
 
             bus.Publish(command);
 
-            eventStore.Received().Save(new EventWrapper(id, expected));
+            eventStore.Received().OpenStream(id);
+            eventStoreStream.Received().Add(expected);
+            eventBus.Received().Publish(Arg.Is<EventWrapper>(x => x.Event.Equals(expected)));
+            eventStoreStream.Received().CommitChanges();
         }
     }
 }

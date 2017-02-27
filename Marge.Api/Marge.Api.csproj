@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Marge.Core.Commands\Marge.Core.Commands.csproj" />
     <ProjectReference Include="..\Marge.Core.Queries\Marge.Core.Queries.csproj" />
+    <ProjectReference Include="..\Marge.Infrastructure.Data\Marge.Infrastructure.Data.csproj" />
   </ItemGroup>
 
 </Project>

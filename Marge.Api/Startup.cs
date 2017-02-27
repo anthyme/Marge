@@ -5,6 +5,7 @@ using Marge.Core.Commands.Handlers;
 using Marge.Core.Queries;
 using Marge.Core.Queries.Handlers;
 using Marge.Infrastructure;
+using Marge.Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -35,9 +36,10 @@ namespace Marge.Api
             // Add framework services.
             services.AddMvc();
 
-            services.AddSingleton<IEventStore, InMemoryEventStore>();
-            services.AddSingleton<CommandBus>();
-            services.AddSingleton<EventBus>();
+            services.AddSingleton<IEventStore, EventStore>();
+            services.AddSingleton<IEventBus, EventBus>();
+            services.AddSingleton<ICommandBus, CommandBus>();
+            services.AddSingleton<IEventAggregateCommandHandler, EventAggregateCommandHandler>();
             services.AddSingleton<PriceCommandHandler>();
             services.AddSingleton<UpdatePricesHandler>();
 
@@ -60,7 +62,7 @@ namespace Marge.Api
 
         private static void ConfigureCommandBus(IApplicationBuilder app)
         {
-            var commandBus = app.ApplicationServices.GetService<CommandBus>();
+            var commandBus = app.ApplicationServices.GetService<ICommandBus>();
             var commandHandler = app.ApplicationServices.GetService<PriceCommandHandler>();
             commandBus.Subscribe<ChangeDiscountCommand>(commandHandler);
             commandBus.Subscribe<CreatePriceCommand>(commandHandler);
@@ -69,7 +71,7 @@ namespace Marge.Api
         private static void ConfigureQueryHandlers(IApplicationBuilder app)
         {
             var updatePricesHandler = app.ApplicationServices.GetService<UpdatePricesHandler>();
-            var eventBus = app.ApplicationServices.GetService<EventBus>();
+            var eventBus = app.ApplicationServices.GetService<IEventBus>();
             subscriptions = new[]
             {
                 eventBus.Subscribe<DiscountChanged>(updatePricesHandler.Handle),

@@ -11,10 +11,10 @@ namespace Marge.Api.Controllers
     [Route("api/[controller]")]
     public class PriceController : Controller
     {
-        private readonly CommandBus commandBus;
+        private readonly ICommandBus commandBus;
         private readonly IPriceQuery priceQuery;
 
-        public PriceController(CommandBus commandBus, IPriceQuery priceQuery)
+        public PriceController(ICommandBus commandBus, IPriceQuery priceQuery)
         {
             this.commandBus = commandBus;
             this.priceQuery = priceQuery;

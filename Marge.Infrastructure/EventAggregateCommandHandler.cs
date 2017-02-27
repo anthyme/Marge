@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Marge.Common;
 
@@ -23,19 +22,21 @@ namespace Marge.Infrastructure
 
         public void Handle<TCommand>(IHandle<TCommand> handler, TCommand command)
         {
-            var (aggregateId, events) = GetAggregateInfos(command);
-            var generatedEvents = handler.Handle(command, events).Select(x => new EventWrapper(aggregateId, x)).ToList();
-            generatedEvents.ForEach(eventStore.Save);
-            generatedEvents.ForEach(eventBus.Publish);
+            using (var stream = CreateStream(command))
+            {
+                var generatedEvents = handler.Handle(command, stream.CommittedEvents.Select(x => x.Event)).ToList();
+                generatedEvents.ForEach(stream.Add);
+                generatedEvents.Select(x => new EventWrapper(stream.StreamId, x)).ForEach(eventBus.Publish);
+                stream.CommitChanges();
+            }
         }
 
-        (Guid aggregateId, IEnumerable<IEvent> events) GetAggregateInfos<TCommand>(TCommand command)
+        private IEventStoreStream CreateStream<TCommand>(TCommand command)
         {
-            return command is IAggregateId aggregateId
-                ? (aggregateId.AggregateId, GetEvents(aggregateId.AggregateId))
-                : (Guid.NewGuid(), Enumerable.Empty<IEvent>());
-
-            IEnumerable<IEvent> GetEvents(Guid id) => eventStore.RetrieveAllEvents(id).Select(x => x.Event);
+            var stream = command is IAggregateId aggregateId
+                ? eventStore.OpenStream(aggregateId.AggregateId)
+                : eventStore.CreateStream(Guid.NewGuid());
+            return stream;
         }
     }
 }
