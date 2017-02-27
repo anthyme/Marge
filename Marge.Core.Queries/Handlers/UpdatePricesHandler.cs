@@ -6,9 +6,9 @@ namespace Marge.Core.Queries.Handlers
 {
     public class UpdatePricesHandler
     {
-        private readonly PriceRepository priceSaver;
+        private readonly IPriceSaver priceSaver;
 
-        public UpdatePricesHandler(PriceRepository priceSaver)
+        public UpdatePricesHandler(IPriceSaver priceSaver)
         {
             this.priceSaver = priceSaver;
         }

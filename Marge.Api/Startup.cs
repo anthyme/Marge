@@ -35,15 +35,21 @@ namespace Marge.Api
             // Add framework services.
             services.AddMvc();
 
-            services.AddSingleton<IEventStore, EventStore>();
-            services.AddSingleton<IEventBus, EventBus>();
-            services.AddSingleton<ICommandBus, CommandBus>();
-            services.AddSingleton<IEventAggregateCommandHandler, EventAggregateCommandHandler>();
-            services.AddSingleton<UpdatePricesHandler>();
+            ConfigureDependencies(services);
+        }
 
+        private static void ConfigureDependencies(IServiceCollection services)
+        {
             var priceRepository = new PriceRepository();
-            services.AddSingleton<PriceRepository>(priceRepository);
-            services.AddSingleton<IPriceQuery>(priceRepository);
+
+            services.AddSingleton<IEventStore, EventStore>()
+                .AddSingleton<IEventBus, EventBus>()
+                .AddSingleton<ICommandBus, CommandBus>()
+                .AddSingleton<IEventAggregateCommandHandler, EventAggregateCommandHandler>()
+                .AddSingleton<UpdatePricesHandler>()
+                .AddSingleton<IPriceSaver>(priceRepository)
+                .AddSingleton<IPriceQuery>(priceRepository)
+                ;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
