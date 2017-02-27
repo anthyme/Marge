@@ -38,9 +38,7 @@ namespace Marge.Tests
             eventStore.CreateStream(Arg.Any<Guid>()).Returns(x => eventStoreStream);
             eventStore.OpenStream(Arg.Any<Guid>()).Returns(x => eventStoreStream);
             var bus = new CommandBus(new EventAggregateCommandHandler(eventStore, eventBus));
-            var commandHandler = new PriceCommandHandler();
-            bus.Subscribe<ChangeDiscountCommand>(commandHandler);
-            bus.Subscribe<CreatePriceCommand>(commandHandler);
+            PriceCommandHandler.RegisterCommands(bus);
 
             eventStoreStream.CommittedEvents.Returns(initialEvents);
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using Marge.Common.Events;
-using Marge.Core.Commands;
 using Marge.Core.Commands.Handlers;
 using Marge.Core.Queries;
 using Marge.Core.Queries.Handlers;
@@ -40,7 +39,6 @@ namespace Marge.Api
             services.AddSingleton<IEventBus, EventBus>();
             services.AddSingleton<ICommandBus, CommandBus>();
             services.AddSingleton<IEventAggregateCommandHandler, EventAggregateCommandHandler>();
-            services.AddSingleton<PriceCommandHandler>();
             services.AddSingleton<UpdatePricesHandler>();
 
             var priceRepository = new PriceRepository();
@@ -62,10 +60,7 @@ namespace Marge.Api
 
         private static void ConfigureCommandBus(IApplicationBuilder app)
         {
-            var commandBus = app.ApplicationServices.GetService<ICommandBus>();
-            var commandHandler = app.ApplicationServices.GetService<PriceCommandHandler>();
-            commandBus.Subscribe<ChangeDiscountCommand>(commandHandler);
-            commandBus.Subscribe<CreatePriceCommand>(commandHandler);
+            PriceCommandHandler.RegisterCommands(app.ApplicationServices.GetService<ICommandBus>());
         }
 
         private static void ConfigureQueryHandlers(IApplicationBuilder app)

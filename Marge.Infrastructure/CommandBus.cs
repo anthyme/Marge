@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
@@ -7,11 +8,12 @@ namespace Marge.Infrastructure
     public interface ICommandBus
     {
         void Publish(object command);
-        IDisposable Subscribe<TCommand>(IHandle<TCommand> handler);
+        ICommandBus On<TCommand>(CommandHandler<TCommand> handler);
     }
 
-    public class CommandBus : ICommandBus
+    public class CommandBus : ICommandBus, IDisposable
     {
+        private readonly List<IDisposable> subscriptions = new List<IDisposable>();
         private readonly IEventAggregateCommandHandler aggregateCommandHandler;
         private readonly Subject<object> subject = new Subject<object>();
 
@@ -25,9 +27,16 @@ namespace Marge.Infrastructure
             subject.OnNext(command);
         }
 
-        public IDisposable Subscribe<TCommand>(IHandle<TCommand> handler)
+        public ICommandBus On<TCommand>(CommandHandler<TCommand> handler)
         {
-            return subject.OfType<TCommand>().Subscribe(command => aggregateCommandHandler.Handle(handler, command));
+            subscriptions.Add(subject.OfType<TCommand>().Subscribe(command => aggregateCommandHandler.Handle(handler, command)));
+            return this;
+        }
+
+        public void Dispose()
+        {
+            subscriptions.ForEach(x => x.Dispose());
+            subject?.Dispose();
         }
     }
 }

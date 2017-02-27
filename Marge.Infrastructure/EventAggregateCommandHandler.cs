@@ -6,7 +6,7 @@ namespace Marge.Infrastructure
 {
     public interface IEventAggregateCommandHandler
     {
-        void Handle<TCommand>(IHandle<TCommand> handler, TCommand command);
+        void Handle<TCommand>(CommandHandler<TCommand> handler, TCommand command);
     }
 
     public class EventAggregateCommandHandler : IEventAggregateCommandHandler
@@ -20,11 +20,11 @@ namespace Marge.Infrastructure
             this.eventBus = eventBus;
         }
 
-        public void Handle<TCommand>(IHandle<TCommand> handler, TCommand command)
+        public void Handle<TCommand>(CommandHandler<TCommand> handler, TCommand command)
         {
             using (var stream = CreateStream(command))
             {
-                var generatedEvents = handler.Handle(command, stream.CommittedEvents).ToList();
+                var generatedEvents = handler(stream.CommittedEvents, command).ToList();
                 generatedEvents.ForEach(stream.Add);
                 generatedEvents.Select(x => new EventWrapper(stream.StreamId, x)).ForEach(eventBus.Publish);
                 stream.CommitChanges();

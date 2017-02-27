@@ -1,20 +1,15 @@
-﻿using System.Collections.Generic;
-using Marge.Common;
-using Marge.Core.Commands.Models;
+﻿using Marge.Core.Commands.Models;
 using Marge.Infrastructure;
 
 namespace Marge.Core.Commands.Handlers
 {
-    public class PriceCommandHandler : IHandle<CreatePriceCommand>, IHandle<ChangeDiscountCommand>
+    public static class PriceCommandHandler
     {
-        public IEnumerable<IEvent> Handle(CreatePriceCommand command, IEnumerable<IEvent> events)
+        public static void RegisterCommands(ICommandBus bus)
         {
-            return Price.Create(command);
-        }
-
-        public IEnumerable<IEvent> Handle(ChangeDiscountCommand command, IEnumerable<IEvent> events)
-        {
-            return new Price(events).ChangeDiscount(command);
+            bus
+            .On<CreatePriceCommand>((_, cmd) => Price.Create(cmd))
+            .On<ChangeDiscountCommand>((events, cmd) => new Price(events).ChangeDiscount(cmd));
         }
     }
 }
