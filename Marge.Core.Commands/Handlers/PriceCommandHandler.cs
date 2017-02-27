@@ -20,18 +20,21 @@ namespace Marge.Core.Commands.Handlers
 
         public IEnumerable<EventWrapper> Handle(CreatePriceCommand command)
         {
-            var payloads = Price.Create(command);
-            var events = payloads.Select(x => new EventWrapper(Guid.NewGuid(), x)).ToList();
-            events.ForEach(eventStore.Save);
-            events.ForEach(eventBus.Publish);
-            return events;
+            return WrapSavePublish(Guid.NewGuid(), Price.Create(command));
         }
 
         public IEnumerable<EventWrapper> Handle(ChangeDiscountCommand command)
         {
-            var price = new Price(eventStore.RetrieveAllEvents(command.PriceId).Select(x => x.Event).ToArray());
+            var id = command.PriceId;
+            var price = new Price(eventStore.RetrieveAllEvents(id).Select(x => x.Event));
             var payloads = price.ChangeDiscount(command);
-            var events = payloads.Select(x => new EventWrapper(command.PriceId, x)).ToList();
+
+            return WrapSavePublish(id, payloads);
+        }
+
+        private List<EventWrapper> WrapSavePublish(Guid id, IEnumerable<IEvent> payloads)
+        {
+            var events = payloads.Select(x => new EventWrapper(id, x)).ToList();
             events.ForEach(eventStore.Save);
             events.ForEach(eventBus.Publish);
             return events;

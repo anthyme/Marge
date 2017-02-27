@@ -9,7 +9,7 @@ namespace Marge.Core.Commands.Models
     {
         private readonly State state;
 
-        public Price(params IEvent[] events)
+        public Price(IEnumerable<IEvent> events)
         {
             state = new State(events);
         }
@@ -35,7 +35,7 @@ namespace Marge.Core.Commands.Models
             public decimal Cost { get; private set; }
             public decimal TargetPrice { get; private set; }
 
-            public State(IEvent[] events)
+            public State(IEnumerable<IEvent> events)
             {
                 foreach (var evt in events)
                 {
