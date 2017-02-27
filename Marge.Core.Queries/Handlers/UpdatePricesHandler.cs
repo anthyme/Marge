@@ -1,6 +1,6 @@
-﻿using Marge.Common;
-using Marge.Common.Events;
+﻿using Marge.Common.Events;
 using Marge.Core.Queries.Models;
+using Marge.Infrastructure;
 
 namespace Marge.Core.Queries.Handlers
 {

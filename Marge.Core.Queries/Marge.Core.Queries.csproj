@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Marge.Common\Marge.Common.csproj" />
+    <ProjectReference Include="..\Marge.Infrastructure\Marge.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
-﻿using Marge.Common;
-using Marge.Common.Events;
+﻿using Marge.Common.Events;
 using System.Collections.Generic;
+using Marge.Infrastructure;
 
 namespace Marge.Core.Commands.Models
 {

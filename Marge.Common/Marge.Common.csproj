@@ -4,4 +4,8 @@
     <TargetFramework>netstandard1.4</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Marge.Infrastructure\Marge.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

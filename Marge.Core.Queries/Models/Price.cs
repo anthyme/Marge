@@ -1,8 +1,9 @@
 ﻿using System;
+using Marge.Infrastructure;
 
 namespace Marge.Core.Queries.Models
 {
-    public struct Price
+    public class Price : Value
     {
         public Guid Id { get; }
 
@@ -19,5 +20,7 @@ namespace Marge.Core.Queries.Models
             Discount = discount;
             Profit = profit;
         }
+
+        protected override object ValueSignature => new { Id, Amount, Discount, Profit };
     }
 }

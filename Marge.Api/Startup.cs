@@ -2,6 +2,7 @@
 using Marge.Common.Events;
 using Marge.Core.Commands.Handlers;
 using Marge.Core.Queries;
+using Marge.Core.Queries.Data;
 using Marge.Core.Queries.Handlers;
 using Marge.Infrastructure;
 using Marge.Infrastructure.Data;

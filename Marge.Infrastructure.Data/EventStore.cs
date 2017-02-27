@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using Marge.Common;
 using NEventStore;
 using NEventStore.Persistence.Sql.SqlDialects;
 

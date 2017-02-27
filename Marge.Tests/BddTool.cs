@@ -1,6 +1,4 @@
 ﻿using System;
-using Marge.Common;
-using Marge.Core.Commands;
 using Marge.Core.Commands.Handlers;
 using Marge.Infrastructure;
 using NSubstitute;

@@ -1,10 +1,6 @@
 ﻿using Marge.Common.Events;
 using Marge.Core.Commands;
-using Marge.Core.Commands.Models;
-using NFluent;
 using System;
-using System.Collections.Generic;
-using Marge.Common;
 using Xunit;
 
 namespace Marge.Tests.Core.Commands

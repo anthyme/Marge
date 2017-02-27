@@ -1,6 +1,8 @@
-﻿namespace Marge.Common.Events
+﻿using Marge.Infrastructure;
+
+namespace Marge.Common.Events
 {
-    public struct DiscountChanged : IEvent
+    public class DiscountChanged : Value, IEvent
     {
         public decimal Price { get; }
         public int Discount { get; }
@@ -13,9 +15,6 @@
             Profit = profit;
         }
 
-        public override string ToString()
-        {
-            return $"Price = {Price} Discount = {Discount} Profit = {Profit}";
-        }
+        protected override object ValueSignature => new { Price, Discount, Profit };
     }
 }
