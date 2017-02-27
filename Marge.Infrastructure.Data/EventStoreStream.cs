@@ -11,7 +11,7 @@ namespace Marge.Infrastructure.Data
         private readonly IEventStream stream;
 
         public Guid StreamId { get; }
-        public ICollection<EventWrapper> CommittedEvents => stream.CommittedEvents.Select(Extract).ToList();
+        public ICollection<IEvent> CommittedEvents => stream.CommittedEvents.Select(x => x.Body).Cast<IEvent>().ToList();
 
         public EventStoreStream(Guid streamId, IEventStream stream)
         {
@@ -37,11 +37,6 @@ namespace Marge.Infrastructure.Data
         public void Dispose()
         {
             stream.Dispose();
-        }
-
-        private EventWrapper Extract(EventMessage eventMessage)
-        {
-            return new EventWrapper(StreamId, (IEvent)eventMessage.Body);
         }
     }
 }

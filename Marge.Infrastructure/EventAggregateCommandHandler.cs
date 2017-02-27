@@ -24,7 +24,7 @@ namespace Marge.Infrastructure
         {
             using (var stream = CreateStream(command))
             {
-                var generatedEvents = handler.Handle(command, stream.CommittedEvents.Select(x => x.Event)).ToList();
+                var generatedEvents = handler.Handle(command, stream.CommittedEvents).ToList();
                 generatedEvents.ForEach(stream.Add);
                 generatedEvents.Select(x => new EventWrapper(stream.StreamId, x)).ForEach(eventBus.Publish);
                 stream.CommitChanges();

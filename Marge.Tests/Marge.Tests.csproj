@@ -81,10 +81,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\Commands\CommandBusTest.cs" />
     <Compile Include="Core\Commands\PriceTest.cs" />
     <Compile Include="Core\Queries\PriceRepositoryTest.cs" />
     <Compile Include="Core\Queries\PriceTest.cs" />
+    <Compile Include="BddTool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

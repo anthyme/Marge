@@ -4,8 +4,7 @@ using System.Collections.Generic;
 
 namespace Marge.Core.Commands.Models
 {
-    //TODO: make private
-    public class Price
+    class Price
     {
         private readonly State state;
 

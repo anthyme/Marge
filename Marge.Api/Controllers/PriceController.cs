@@ -38,7 +38,6 @@ namespace Marge.Api.Controllers
             commandBus.Publish(command);
         }
 
-        //TODO: fix that
         [HttpPut("{id}")]
         public void Put(Guid id, [FromBody]ChangeDiscountCommand command)
         {

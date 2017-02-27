@@ -12,7 +12,7 @@ namespace Marge.Infrastructure
 
     public interface IEventStoreStream : IDisposable
     {
-        ICollection<EventWrapper> CommittedEvents { get; }
+        ICollection<IEvent> CommittedEvents { get; }
         Guid StreamId { get; }
         void Add(IEvent @event);
         void ClearChanges();
