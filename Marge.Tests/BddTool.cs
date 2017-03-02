@@ -32,10 +32,11 @@ namespace Marge.Tests
         {
             var eventStore = Substitute.For<IEventStore>();
             var eventBus = Substitute.For<IEventBus>();
+            var transactionFactory = Substitute.For<ITransactionFactory>();
             var eventStoreStream = Substitute.For<IEventStoreStream>();
             eventStore.CreateStream(Arg.Any<Guid>()).Returns(x => eventStoreStream);
             eventStore.OpenStream(Arg.Any<Guid>()).Returns(x => eventStoreStream);
-            var bus = new CommandBus(new EventAggregateCommandHandler(eventStore, eventBus));
+            var bus = new CommandBus(new EventAggregateCommandHandler(eventStore, eventBus, transactionFactory));
             PriceCommandHandler.RegisterCommands(bus);
 
             eventStoreStream.CommittedEvents.Returns(initialEvents);

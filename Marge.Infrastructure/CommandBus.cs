@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
 
 namespace Marge.Infrastructure
 {
@@ -11,11 +9,19 @@ namespace Marge.Infrastructure
         ICommandBus On<TCommand>(CommandHandler<TCommand> handler);
     }
 
-    public class CommandBus : ICommandBus, IDisposable
+    public class CommandBus : ICommandBus
     {
-        private readonly List<IDisposable> subscriptions = new List<IDisposable>();
         private readonly IEventAggregateCommandHandler aggregateCommandHandler;
-        private readonly Subject<object> subject = new Subject<object>();
+        private readonly IDictionary<Type, Action<object>> subscritions = new Dictionary<Type, Action<object>>();
+
+        public void Subscribe<T>(Action<EventWrapper, T> subscription)
+        {
+            subscritions[typeof(T)] = x =>
+            {
+                var evt = (EventWrapper)x;
+                subscription(evt, (T)evt.Event);
+            };
+        }
 
         public CommandBus(IEventAggregateCommandHandler aggregateCommandHandler)
         {
@@ -24,19 +30,16 @@ namespace Marge.Infrastructure
 
         public void Publish(object command)
         {
-            subject.OnNext(command);
+            subscritions[command.GetType()](command);
         }
 
         public ICommandBus On<TCommand>(CommandHandler<TCommand> handler)
         {
-            subscriptions.Add(subject.OfType<TCommand>().Subscribe(command => aggregateCommandHandler.Handle(handler, command)));
+            subscritions[typeof(TCommand)] = x =>
+            {
+                aggregateCommandHandler.Handle(handler, (TCommand)x);
+            };
             return this;
-        }
-
-        public void Dispose()
-        {
-            subscriptions.ForEach(x => x.Dispose());
-            subject?.Dispose();
         }
     }
 }

@@ -16,8 +16,6 @@ namespace Marge.Api
 {
     public class Startup
     {
-        private static IDisposable[] subscriptions;
-
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -50,6 +48,7 @@ namespace Marge.Api
                 .AddSingleton<UpdatePricesHandler>()
                 .AddSingleton<IPriceSaver>(priceRepository)
                 .AddSingleton<IPriceQuery>(priceRepository)
+                .AddSingleton<ITransactionFactory, TransactionFactory>()
                 ;
         }
 
@@ -78,11 +77,8 @@ namespace Marge.Api
         {
             var updatePricesHandler = app.ApplicationServices.GetService<UpdatePricesHandler>();
             var eventBus = app.ApplicationServices.GetService<IEventBus>();
-            subscriptions = new[]
-            {
-                eventBus.Subscribe<DiscountChanged>(updatePricesHandler.Handle),
-                eventBus.Subscribe<PriceCreated>(updatePricesHandler.Handle),
-            };
+            eventBus.Subscribe<DiscountChanged>(updatePricesHandler.Handle);
+            eventBus.Subscribe<PriceCreated>(updatePricesHandler.Handle);
         }
     }
 }

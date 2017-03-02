@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Transactions;
 using Dapper;
 using Marge.Core.Queries.Handlers;
 using Marge.Core.Queries.Models;
@@ -30,7 +31,10 @@ namespace Marge.Core.Queries.Data
 
         private static SqlConnection CreateConnection()
         {
-            return new SqlConnection(ConfigurationManager.ConnectionStrings["MargeDb"].ConnectionString);
+            var con = new SqlConnection(ConfigurationManager.ConnectionStrings["MargeDb"].ConnectionString);
+            con.Open();
+            con.EnlistTransaction(Transaction.Current);
+            return con;
         }
     }
 }

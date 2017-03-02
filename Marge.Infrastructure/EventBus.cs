@@ -1,27 +1,35 @@
 ﻿using System;
-using System.Reactive.Subjects;
-using System.Reactive.Linq;
+using System.Collections.Generic;
 
 namespace Marge.Infrastructure
 {
     public interface IEventBus
     {
         void Publish(EventWrapper @event);
-        IDisposable Subscribe<T>(Action<EventWrapper, T> subscription);
+        void Subscribe<T>(Action<EventWrapper, T> subscription);
     }
 
     public class EventBus : IEventBus
     {
-        private Subject<EventWrapper> subject = new Subject<EventWrapper>();
+        private readonly IDictionary<Type, List<Action<object>>> subscriptions = new Dictionary<Type, List<Action<object>>>();
 
         public void Publish(EventWrapper @event)
         {
-            subject.OnNext(@event);
+            subscriptions[@event.Event.GetType()].ForEach(subscription => subscription(@event));
         }
 
-        public IDisposable Subscribe<T>(Action<EventWrapper, T> subscription)
+        public void Subscribe<T>(Action<EventWrapper, T> subscription)
         {
-            return subject.Where(x => x.Event is T).Subscribe(x => subscription(x, (T)x.Event));
+            if (!subscriptions.ContainsKey(typeof(T)))
+            {
+                subscriptions[typeof(T)] = new List<Action<object>>();
+            }
+
+            subscriptions[typeof(T)].Add(x =>
+            {
+                var evt = (EventWrapper) x;
+                subscription(evt, (T) evt.Event);
+            });
         }
     }
 }
