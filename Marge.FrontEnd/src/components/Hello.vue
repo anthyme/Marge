@@ -1,13 +1,22 @@
 <template>
   <div class="marge">
     <h1>{{ msg }}</h1>
-    <ul>
-    </ul>
+    <h2>Create Price</h2>
+    <create-pricing> </create-pricing>
+    <h2>Pricing list</h2>
+    <pricing-list> </pricing-list>
   </div>
 </template>
 
 <script>
+import PricingList from './PricingList'
+import CreatePricing from './CreatePricing'
+
 export default {
+  components: {
+    PricingList,
+    CreatePricing
+  },
   name: 'hello',
   data () {
     return {

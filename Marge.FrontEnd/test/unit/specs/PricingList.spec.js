@@ -6,6 +6,6 @@ describe('PricingList.vue', () => {
     const Constructor = Vue.extend(PricingList)
     const vm = new Constructor().$mount()
     expect(vm.$el.textContent)
-      .to.contain('Pricing')
+      .to.contain('Amount')
   })
 })

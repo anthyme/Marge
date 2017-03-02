@@ -1,5 +1,5 @@
 <template>
-    <table id="pricingTable" class="table table-hover product-table">Pricing
+    <table id="pricingTable" class="">
         <thead>
             <tr>
                 <th>Amount</th>
@@ -18,23 +18,24 @@
 </template>
 
 <script>
+    import Vue from 'vue';
+
     export default {
-        data() {
+        data: () => {
             return {
-                prices: [
-                    {
-                        id: 'cc919e21-ae5b-5e1f-d023-c40ee669520c',
-                        amount: 69.,
-                        discount: 0.,
-                        profit: 42.,
-                    },
-                    {
-                        id: 'bcd755a6-9a19-94e1-0a5d-426c0303454f',
-                        amount: 666,
-                        discount: 69,
-                        profit: 100.42,
-                    }
-                ]
+                prices: null
+            }
+        },
+        created: function () {
+            this.fetchPrices()
+        },
+        methods: {
+            fetchPrices: function () {
+                var self = this
+                return Vue.http.get('http://localhost:49842/api/price')
+                    .then((response) => {
+                        self.prices = response.body
+                    })
             }
         }
     }
