@@ -3,23 +3,28 @@ using Marge.Infrastructure;
 
 namespace Marge.Core.Commands
 {
-    public class CreatePriceCommand
+    public class CreatePriceCommand : Command
     {
+        public override Guid CommandId { get; }
         public decimal TargetPrice { get; }
         public decimal Cost { get; }
 
-        public CreatePriceCommand(decimal targetPrice, decimal cost)
+        public CreatePriceCommand(decimal targetPrice, decimal cost, Guid? commandId = null)
         {
+            CommandId = commandId ?? Guid.NewGuid();
             TargetPrice = targetPrice;
             Cost = cost;
+            IsFirstCommand = true;
         }
+
+        protected override object ValueSignature => new { CommandId, TargetPrice, Cost };
     }
 
-    public class ChangeDiscountCommand : IAggregateId
+    public class ChangeDiscountCommand : Command
     {
-        Guid IAggregateId.AggregateId => PriceId;
+        public override Guid CommandId => PriceId;
 
-        public Guid  PriceId { get; }
+        public Guid PriceId { get; }
         public int Discount { get; }
 
         public ChangeDiscountCommand(Guid priceId, int discount)
@@ -27,11 +32,13 @@ namespace Marge.Core.Commands
             PriceId = priceId;
             Discount = discount;
         }
+
+        protected override object ValueSignature => new { PriceId, Discount };
     }
 
-    public class DeletePriceCommand : IAggregateId
+    public class DeletePriceCommand : Command
     {
-        Guid IAggregateId.AggregateId => PriceId;
+        public override Guid CommandId => PriceId;
 
         public Guid PriceId { get; }
 
@@ -39,5 +46,6 @@ namespace Marge.Core.Commands
         {
             PriceId = priceId;
         }
+        protected override object ValueSignature => new { PriceId };
     }
 }

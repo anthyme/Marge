@@ -5,7 +5,7 @@ namespace Marge.Infrastructure
 {
     public interface IEventAggregateCommandHandler
     {
-        void Handle<TCommand>(CommandHandler<TCommand> handler, TCommand command);
+        void Handle<TCommand>(CommandHandler<TCommand> handler, TCommand command) where TCommand : Command;
     }
 
     public class EventAggregateCommandHandler : IEventAggregateCommandHandler
@@ -21,7 +21,7 @@ namespace Marge.Infrastructure
             this.transactionFactory = transactionFactory;
         }
 
-        public void Handle<TCommand>(CommandHandler<TCommand> handler, TCommand command)
+        public void Handle<TCommand>(CommandHandler<TCommand> handler, TCommand command) where TCommand : Command
         {
             using (var stream = CreateStream(command))
             {
@@ -36,12 +36,9 @@ namespace Marge.Infrastructure
             }
         }
 
-        private IEventStoreStream CreateStream<TCommand>(TCommand command)
+        private IEventStoreStream CreateStream<TCommand>(TCommand cmd) where TCommand : Command
         {
-            var stream = command is IAggregateId aggregateId
-                ? eventStore.OpenStream(aggregateId.AggregateId)
-                : eventStore.CreateStream(Guid.NewGuid());
-            return stream;
+            return cmd.IsFirstCommand ? eventStore.CreateStream(cmd.CommandId) : eventStore.OpenStream(cmd.CommandId);
         }
     }
 }

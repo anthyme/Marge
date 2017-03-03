@@ -44,14 +44,13 @@ namespace Marge.Tests
             bus.Publish(command);
 
 
-            if (command is IAggregateId agg)
+            if (command is Command cmd && !cmd.IsFirstCommand)
             {
-                eventStore.Received().OpenStream(agg.AggregateId);
+                eventStore.Received().OpenStream(cmd.CommandId);
             }
 
             foreach (var resultingEvent in resultingEvents)
             {
-
                 eventStoreStream.Received().Add(resultingEvent);
                 eventBus.Received().Publish(Arg.Is<EventWrapper>(x => x.Event.Equals(resultingEvent)));
             }

@@ -6,7 +6,7 @@ namespace Marge.Infrastructure
     public interface ICommandBus
     {
         void Publish(object command);
-        ICommandBus On<TCommand>(CommandHandler<TCommand> handler);
+        ICommandBus On<TCommand>(CommandHandler<TCommand> handler) where TCommand : Command;
     }
 
     public class CommandBus : ICommandBus
@@ -24,12 +24,9 @@ namespace Marge.Infrastructure
             subscritions[command.GetType()](command);
         }
 
-        public ICommandBus On<TCommand>(CommandHandler<TCommand> handler)
+        public ICommandBus On<TCommand>(CommandHandler<TCommand> handler) where TCommand : Command
         {
-            subscritions[typeof(TCommand)] = x =>
-            {
-                aggregateCommandHandler.Handle(handler, (TCommand)x);
-            };
+            subscritions[typeof(TCommand)] = x => aggregateCommandHandler.Handle(handler, (TCommand)x);
             return this;
         }
     }
