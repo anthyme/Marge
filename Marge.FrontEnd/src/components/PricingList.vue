@@ -22,29 +22,23 @@
     import Vue from 'vue';
 
     export default {
-        data: () => {
-            return {
-                prices: []
-            }
-        },
-        created: function () {
+        data: () => ({
+            prices: null
+        }),
+        mounted: function () {
             this.fetchPrices()
         },
 
         methods: {
-            fetchPrices: function () {
-                var self = this
-                return Vue.http.get('http://localhost:49842/api/price')
-                    .then((response) => {
-                        self.prices = response.body
-                    })
+            fetchPrices: function () { 
+                this.$http.get('http://localhost:49842/api/price')
+                    .then((response) => this.prices = response.body) 
             },
             changeDiscount(price) {
-                var self = this
-                Vue.http.put('http://localhost:49842/api/price/' + price.id, { discount: price.discount })
-                    .then((response) => self.fetchPrices())
+                this.$http.put('http://localhost:49842/api/price/' + price.id, { discount: price.discount })
+                    .then(this.fetchPrices)
             },
+            // setPrices(response) { this.prices = response.body }
         }
     }
-
 </script>
