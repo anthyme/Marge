@@ -10,7 +10,7 @@ namespace Marge.Infrastructure.Data
         private readonly IEventStream stream;
 
         public Guid StreamId { get; }
-        public ICollection<IEvent> CommittedEvents => stream.CommittedEvents.Select(x => x.Body).Cast<IEvent>().ToList();
+        public ICollection<Event> CommittedEvents => stream.CommittedEvents.Select(x => x.Body).Cast<Event>().ToList();
 
         public EventStoreStream(Guid streamId, IEventStream stream)
         {
@@ -18,7 +18,7 @@ namespace Marge.Infrastructure.Data
             this.stream = stream;
         }
 
-        public void Add(IEvent @event)
+        public void Add(Event @event)
         {
             stream.Add(new EventMessage { Body = @event });
         }

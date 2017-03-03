@@ -2,7 +2,7 @@
 
 namespace Marge.Common.Events
 {
-    public class PriceDeleted : Value, IEvent
+    public class PriceDeleted : Event
     {
         protected override object ValueSignature => new { };
     }

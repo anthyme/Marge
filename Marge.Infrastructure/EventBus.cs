@@ -6,7 +6,7 @@ namespace Marge.Infrastructure
     public interface IEventBus
     {
         void Publish(EventWrapper @event);
-        void Subscribe<T>(Action<EventWrapper, T> subscription);
+        void Subscribe<T>(Action<EventWrapper, T> subscription) where T : Event;
     }
 
     public class EventBus : IEventBus
@@ -18,7 +18,7 @@ namespace Marge.Infrastructure
             subscriptions[@event.Event.GetType()].ForEach(subscription => subscription(@event));
         }
 
-        public void Subscribe<T>(Action<EventWrapper, T> subscription)
+        public void Subscribe<T>(Action<EventWrapper, T> subscription) where T : Event
         {
             if (!subscriptions.ContainsKey(typeof(T)))
             {

@@ -2,7 +2,7 @@
 
 namespace Marge.Common.Events
 {
-    public class DiscountChanged : Value, IEvent
+    public class DiscountChanged : Event
     {
         public decimal Price { get; }
         public int Discount { get; }

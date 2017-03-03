@@ -7,11 +7,11 @@ namespace Marge.Tests
 {
     public class Given
     {
-        private readonly IEvent[] initialEvents;
-        private IEvent[] resultingEvents;
+        private readonly Event[] initialEvents;
+        private Event[] resultingEvents;
         private object command;
 
-        public Given(params IEvent[] initialEvents)
+        public Given(params Event[] initialEvents)
         {
             this.initialEvents = initialEvents;
         }
@@ -22,7 +22,7 @@ namespace Marge.Tests
             return this;
         }
 
-        public void Then(params IEvent[] resultingEvents)
+        public void Then(params Event[] resultingEvents)
         {
             this.resultingEvents = resultingEvents;
             Run();

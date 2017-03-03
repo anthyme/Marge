@@ -2,7 +2,7 @@
 
 namespace Marge.Common.Events
 {
-    public class PriceCreated : Value, IEvent
+    public class PriceCreated : Event
     {
         public decimal Price { get; }
         public decimal Cost { get; }

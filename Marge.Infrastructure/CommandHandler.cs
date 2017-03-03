@@ -2,5 +2,5 @@
 
 namespace Marge.Infrastructure
 {
-    public delegate IEnumerable<IEvent> CommandHandler<in TCommand>(IEnumerable<IEvent> events, TCommand command);
+    public delegate IEnumerable<Event> CommandHandler<in TCommand>(IEnumerable<Event> events, TCommand command);
 }
