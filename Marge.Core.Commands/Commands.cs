@@ -28,4 +28,16 @@ namespace Marge.Core.Commands
             Discount = discount;
         }
     }
+
+    public class DeletePriceCommand : IAggregateId
+    {
+        Guid IAggregateId.AggregateId => PriceId;
+
+        public Guid PriceId { get; }
+
+        public DeletePriceCommand(Guid priceId)
+        {
+            PriceId = priceId;
+        }
+    }
 }

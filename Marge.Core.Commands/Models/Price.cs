@@ -24,6 +24,11 @@ namespace Marge.Core.Commands.Models
             yield return new DiscountChanged(price, command.Discount, ComputeProfit(price, state.Cost));
         }
 
+        public IEnumerable<IEvent> Delete(DeletePriceCommand command)
+        {
+            yield return new PriceDeleted();
+        }
+
         private static decimal ComputeProfit(decimal price, decimal cost)
         {
             return 1 - cost / price;
@@ -33,6 +38,7 @@ namespace Marge.Core.Commands.Models
         {
             public decimal Cost { get; private set; }
             public decimal TargetPrice { get; private set; }
+            public bool IsDeleted { get; private set; } = false;
 
             public State(IEnumerable<IEvent> events)
             {
@@ -50,6 +56,7 @@ namespace Marge.Core.Commands.Models
                 Cost = evt.Cost;
                 TargetPrice = evt.Price;
             }
+
         }
     }
 }

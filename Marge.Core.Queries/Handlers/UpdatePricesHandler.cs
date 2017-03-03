@@ -22,5 +22,10 @@ namespace Marge.Core.Queries.Handlers
         {
             priceSaver.Update(new Price(wrapper.StreamId, evt.Price, evt.Discount, evt.Profit));
         }
+
+        public void Handle(EventWrapper wrapper, PriceDeleted evt)
+        {
+            priceSaver.Delete(wrapper.StreamId);
+        }
     }
 }

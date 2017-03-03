@@ -31,5 +31,13 @@ namespace Marge.Tests.Core.Commands
                 .When(new ChangeDiscountCommand(Guid.NewGuid(), 0))
                 .Then(new DiscountChanged(1000, 0, 0.2m));
         }
+
+        [Fact]
+        public void WhenDeletePriceThenPriceDeleted()
+        {
+            new Given(new PriceCreated(1000, 800, 0, 0.2m))
+                .When(new DeletePriceCommand(Guid.NewGuid()))
+                .Then(new PriceDeleted());
+        }
     }
 }

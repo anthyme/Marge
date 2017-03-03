@@ -24,6 +24,10 @@ namespace Marge.Core.Queries.Data
         public void Update(Price price)
             => Exec(db => db.Execute("update Prices set Amount = @Amount, Discount = @Discount, Profit = @Profit where id = @id", price));
 
+        public void Delete(Guid id)
+            => Exec(db => db.Execute("delete from Prices where id = @id", new { id }));
+
+
         private static T Exec<T>(Func<IDbConnection, T> f)
         {
             using (var db = CreateConnection()) return f(db);

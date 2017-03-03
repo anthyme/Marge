@@ -1,4 +1,5 @@
-﻿using Marge.Core.Queries.Models;
+﻿using System;
+using Marge.Core.Queries.Models;
 
 namespace Marge.Core.Queries.Handlers
 {
@@ -6,5 +7,6 @@ namespace Marge.Core.Queries.Handlers
     {
         void Create(Price price);
         void Update(Price price);
+        void Delete(Guid id);
     }
 }

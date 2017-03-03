@@ -14,15 +14,6 @@ namespace Marge.Infrastructure
         private readonly IEventAggregateCommandHandler aggregateCommandHandler;
         private readonly IDictionary<Type, Action<object>> subscritions = new Dictionary<Type, Action<object>>();
 
-        public void Subscribe<T>(Action<EventWrapper, T> subscription)
-        {
-            subscritions[typeof(T)] = x =>
-            {
-                var evt = (EventWrapper)x;
-                subscription(evt, (T)evt.Event);
-            };
-        }
-
         public CommandBus(IEventAggregateCommandHandler aggregateCommandHandler)
         {
             this.aggregateCommandHandler = aggregateCommandHandler;

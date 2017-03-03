@@ -9,6 +9,7 @@ namespace Marge.Core.Commands.Handlers
         {
             bus
             .On<CreatePriceCommand>((_, cmd) => Price.Create(cmd))
+            .On<DeletePriceCommand>((events, cmd) => new Price(events).Delete(cmd))
             .On<ChangeDiscountCommand>((events, cmd) => new Price(events).ChangeDiscount(cmd));
         }
     }

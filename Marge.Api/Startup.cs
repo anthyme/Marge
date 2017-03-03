@@ -79,6 +79,7 @@ namespace Marge.Api
             var eventBus = app.ApplicationServices.GetService<IEventBus>();
             eventBus.Subscribe<DiscountChanged>(updatePricesHandler.Handle);
             eventBus.Subscribe<PriceCreated>(updatePricesHandler.Handle);
+            eventBus.Subscribe<PriceDeleted>(updatePricesHandler.Handle);
         }
     }
 }

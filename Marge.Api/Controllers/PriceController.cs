@@ -45,8 +45,9 @@ namespace Marge.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void Delete(Guid id)
         {
+            commandBus.Publish(new DeletePriceCommand(id));
         }
     }
 }
