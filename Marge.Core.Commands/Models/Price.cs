@@ -38,7 +38,6 @@ namespace Marge.Core.Commands.Models
         {
             public decimal Cost { get; private set; }
             public decimal TargetPrice { get; private set; }
-            public bool IsDeleted { get; private set; } = false;
 
             public State(IEnumerable<Event> events)
             {
