@@ -338,6 +338,10 @@
       <Project>{4cf19b4d-55f1-4873-8c9b-bfff0d87d273}</Project>
       <Name>Marge.Core.Queries</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Marge.Infrastructure.Data\Marge.Infrastructure.Data.csproj">
+      <Project>{BB67EEFC-2D4E-441E-ADE0-400CED0051FC}</Project>
+      <Name>Marge.Infrastructure.Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Marge.Infrastructure\Marge.Infrastructure.csproj">
       <Project>{168EC726-8E49-4AAB-B4BB-FD42624BF363}</Project>
       <Name>Marge.Infrastructure</Name>

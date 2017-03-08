@@ -1,33 +1,26 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
+using System.Transactions;
 
-namespace Marge.Infrastructure
+namespace Marge.Infrastructure.Data
 {
-    public interface IEventAggregateCommandHandler
-    {
-        void Handle<TCommand>(CommandHandler<TCommand> handler, TCommand command) where TCommand : Command;
-    }
-
     public class EventAggregateCommandHandler : IEventAggregateCommandHandler
     {
         private readonly IEventStore eventStore;
         private readonly IEventBus eventBus;
-        private readonly ITransactionFactory transactionFactory;
 
-        public EventAggregateCommandHandler(IEventStore eventStore, IEventBus eventBus, ITransactionFactory transactionFactory)
+        public EventAggregateCommandHandler(IEventStore eventStore, IEventBus eventBus)
         {
             this.eventStore = eventStore;
             this.eventBus = eventBus;
-            this.transactionFactory = transactionFactory;
         }
 
-        public void Handle<TCommand>(CommandHandler<TCommand> handler, TCommand command) where TCommand : Command
+        public void Handle(CommandHandler handler, Command command)
         {
             using (var stream = CreateStream(command))
             {
                 var generatedEvents = handler(stream.CommittedEvents, command).ToList();
                 generatedEvents.ForEach(stream.Add);
-                using (var transaction = transactionFactory.Create())
+                using (var transaction = new TransactionScope())
                 {
                     stream.CommitChanges();
                     generatedEvents.Select(x => new EventWrapper(stream.StreamId, x)).ForEach(eventBus.Publish);

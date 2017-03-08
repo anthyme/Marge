@@ -5,29 +5,33 @@ namespace Marge.Infrastructure
 {
     public interface ICommandBus
     {
-        void Publish(object command);
-        ICommandBus On<TCommand>(CommandHandler<TCommand> handler) where TCommand : Command;
+        void Publish(Command command);
+        void Subscribe(CommandHandler commandHandler);
     }
+
+    public delegate IEnumerable<Event> CommandHandler(IEnumerable<Event> events, Command command);
 
     public class CommandBus : ICommandBus
     {
-        private readonly IEventAggregateCommandHandler aggregateCommandHandler;
-        private readonly IDictionary<Type, Action<object>> subscritions = new Dictionary<Type, Action<object>>();
+        private readonly IEventAggregateCommandHandler eventAggregateCommandHandler;
+        private readonly List<CommandHandler> commandHandlers = new List<CommandHandler>();
 
-        public CommandBus(IEventAggregateCommandHandler aggregateCommandHandler)
+        public CommandBus(IEventAggregateCommandHandler eventAggregateCommandHandler)
         {
-            this.aggregateCommandHandler = aggregateCommandHandler;
+            this.eventAggregateCommandHandler = eventAggregateCommandHandler;
         }
 
-        public void Publish(object command)
+        public void Publish(Command command)
         {
-            subscritions[command.GetType()](command);
+            foreach (var commandHandler in commandHandlers)
+            {
+                eventAggregateCommandHandler.Handle(commandHandler, command);
+            }
         }
 
-        public ICommandBus On<TCommand>(CommandHandler<TCommand> handler) where TCommand : Command
+        public void Subscribe(CommandHandler commandHandler)
         {
-            subscritions[typeof(TCommand)] = x => aggregateCommandHandler.Handle(handler, (TCommand)x);
-            return this;
+            commandHandlers.Add(commandHandler);
         }
     }
 }

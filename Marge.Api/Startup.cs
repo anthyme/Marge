@@ -1,6 +1,6 @@
 ﻿using System;
 using Marge.Common.Events;
-using Marge.Core.Commands.Handlers;
+using Marge.Core.Commands;
 using Marge.Core.Queries;
 using Marge.Core.Queries.Data;
 using Marge.Core.Queries.Handlers;
@@ -48,7 +48,6 @@ namespace Marge.Api
                 .AddSingleton<UpdatePricesHandler>()
                 .AddSingleton<IPriceSaver>(priceRepository)
                 .AddSingleton<IPriceQuery>(priceRepository)
-                .AddSingleton<ITransactionFactory, TransactionFactory>()
                 ;
         }
 
@@ -64,13 +63,13 @@ namespace Marge.Api
             });
             app.UseMvc();
 
-            ConfigureCommandBus(app);
+            ConfigureCommandBus(app.ApplicationServices.GetService<ICommandBus>());
             ConfigureQueryHandlers(app);
         }
 
-        private static void ConfigureCommandBus(IApplicationBuilder app)
+        private static void ConfigureCommandBus(ICommandBus commandBus)
         {
-            PriceCommandHandler.RegisterCommands(app.ApplicationServices.GetService<ICommandBus>());
+            commandBus.Subscribe(PriceAggregate.Handle);
         }
 
         private static void ConfigureQueryHandlers(IApplicationBuilder app)
