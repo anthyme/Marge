@@ -1,6 +1,6 @@
 ﻿namespace Marge.Infrastructure
 {
-    public interface IEventAggregateCommandHandler
+    public interface IEventStoreCommandHandler
     {
         void Handle(CommandHandler handler, Command command);
     }

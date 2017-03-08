@@ -17,7 +17,7 @@ namespace Marge.Tests.Core.Queries
             var priceSaver = Substitute.For<IPriceSaver>();
             var handler = new UpdatePricesHandler(priceSaver);
             var evt = new PriceCreated(1000, 700, 0, 0.3m);
-            var wrap = new EventWrapper(Guid.NewGuid(), evt);
+            var wrap = new WrappedEvent(Guid.NewGuid(), evt);
             handler.Handle(wrap, evt);
 
             priceSaver.Received().Create(new Price(wrap.StreamId, evt.Price, evt.Discount, evt.Profit));
@@ -29,7 +29,7 @@ namespace Marge.Tests.Core.Queries
             var priceSaver = Substitute.For<IPriceSaver>();
             var handler = new UpdatePricesHandler(priceSaver);
             var evt = new DiscountChanged(1000, 0, 0.3m);
-            var wrap = new EventWrapper(Guid.NewGuid(), evt);
+            var wrap = new WrappedEvent(Guid.NewGuid(), evt);
             handler.Handle(wrap, evt);
 
             priceSaver.Received().Update(new Price(wrap.StreamId, evt.Price, evt.Discount, evt.Profit));

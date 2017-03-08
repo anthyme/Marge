@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NEventStore;
+using NEventStore.Persistence.Sql.SqlDialects;
 
 namespace Marge.Api
 {
@@ -41,14 +43,26 @@ namespace Marge.Api
         {
             var priceRepository = new PriceRepository();
 
-            services.AddSingleton<IEventStore, EventStore>()
+            services.AddSingleton(CreateEventStore())
                 .AddSingleton<IEventBus, EventBus>()
                 .AddSingleton<ICommandBus, CommandBus>()
-                .AddSingleton<IEventAggregateCommandHandler, EventAggregateCommandHandler>()
+                .AddSingleton<IEventStoreCommandHandler, EventStoreCommandHandler>()
                 .AddSingleton<UpdatePricesHandler>()
                 .AddSingleton<IPriceSaver>(priceRepository)
                 .AddSingleton<IPriceQuery>(priceRepository)
                 ;
+        }
+
+        private static IStoreEvents CreateEventStore()
+        {
+            return Wireup.Init().LogToOutputWindow()
+                .UsingInMemoryPersistence()
+                .UsingSqlPersistence("MargeDb")
+                .WithDialect(new MsSqlDialect())
+                .InitializeStorageEngine()
+                .UsingJsonSerialization()
+                .LogToOutputWindow()
+                .Build();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

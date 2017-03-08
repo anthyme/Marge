@@ -13,17 +13,17 @@ namespace Marge.Core.Queries.Handlers
             this.priceSaver = priceSaver;
         }
 
-        public void Handle(EventWrapper wrapper, PriceCreated evt)
+        public void Handle(WrappedEvent wrapper, PriceCreated evt)
         {
             priceSaver.Create(new Price(wrapper.StreamId, evt.Price, evt.Discount, evt.Profit));
         }
 
-        public void Handle(EventWrapper wrapper, DiscountChanged evt)
+        public void Handle(WrappedEvent wrapper, DiscountChanged evt)
         {
             priceSaver.Update(new Price(wrapper.StreamId, evt.Price, evt.Discount, evt.Profit));
         }
 
-        public void Handle(EventWrapper wrapper, PriceDeleted evt)
+        public void Handle(WrappedEvent wrapper, PriceDeleted evt)
         {
             priceSaver.Delete(wrapper.StreamId);
         }

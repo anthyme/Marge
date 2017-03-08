@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Immutable;
+using System.Linq;
 using Marge.Core.Commands;
 using Marge.Infrastructure;
 using Marge.Infrastructure.Data;
 using NSubstitute;
+using NEventStore;
+using NFluent;
 
 namespace Marge.Tests
 {
@@ -31,30 +35,28 @@ namespace Marge.Tests
 
         private void Run()
         {
-            var eventStore = Substitute.For<IEventStore>();
-            var eventBus = Substitute.For<IEventBus>();
-            var eventStoreStream = Substitute.For<IEventStoreStream>();
-            eventStore.CreateStream(Arg.Any<Guid>()).Returns(x => eventStoreStream);
-            eventStore.OpenStream(Arg.Any<Guid>()).Returns(x => eventStoreStream);
-            var bus = new CommandBus(new EventAggregateCommandHandler(eventStore, eventBus));
-            bus.Subscribe(PriceAggregate.Handle);
-            eventStoreStream.CommittedEvents.Returns(initialEvents);
-
-            bus.Publish(command);
-
-
-            if (command is Command cmd && !cmd.IsFirstCommand)
+            using (var store = Wireup.Init().UsingInMemoryPersistence().Build())
             {
-                eventStore.Received().OpenStream(cmd.CommandId);
-            }
+                var eventBus = Substitute.For<IEventBus>();
 
-            foreach (var resultingEvent in resultingEvents)
-            {
-                eventStoreStream.Received().Add(resultingEvent);
-                eventBus.Received().Publish(Arg.Is<EventWrapper>(x => x.Event.Equals(resultingEvent)));
-            }
+                if (!command.IsFirstCommand)
+                {
+                    using (var stream = store.CreateStream(command.CommandId))
+                    {
+                        initialEvents.Select(x => new EventMessage { Body = x }).ToList().ForEach(stream.Add);
+                        stream.CommitChanges(Guid.NewGuid());
+                    }
+                }
 
-            eventStoreStream.Received().CommitChanges();
+                var bus = new CommandBus(new EventStoreCommandHandler(store, eventBus));
+                bus.Subscribe(PriceAggregate.Handle);
+                bus.Publish(command);
+
+                using (var stream = store.OpenStream(command.CommandId))
+                {
+                    Check.That(stream.CommittedEvents.Select(x => x.Body).Cast<Event>()).Contains(resultingEvents);
+                }
+            }
         }
     }
 }

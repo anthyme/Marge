@@ -17,6 +17,7 @@
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.0" />
+    <PackageReference Include="NEventStore" Version="5.2.0" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0-msbuild3-final" />
@@ -26,6 +27,11 @@
     <ProjectReference Include="..\Marge.Core.Queries.Data\Marge.Core.Queries.Data.csproj" />
     <ProjectReference Include="..\Marge.Core.Queries\Marge.Core.Queries.csproj" />
     <ProjectReference Include="..\Marge.Infrastructure.Data\Marge.Infrastructure.Data.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="NEventStore">
+      <HintPath>..\packages\NEventStore.5.2.0\lib\net40\NEventStore.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

@@ -13,19 +13,19 @@ namespace Marge.Infrastructure
 
     public class CommandBus : ICommandBus
     {
-        private readonly IEventAggregateCommandHandler eventAggregateCommandHandler;
+        private readonly IEventStoreCommandHandler eventStoreCommandHandler;
         private readonly List<CommandHandler> commandHandlers = new List<CommandHandler>();
 
-        public CommandBus(IEventAggregateCommandHandler eventAggregateCommandHandler)
+        public CommandBus(IEventStoreCommandHandler eventStoreCommandHandler)
         {
-            this.eventAggregateCommandHandler = eventAggregateCommandHandler;
+            this.eventStoreCommandHandler = eventStoreCommandHandler;
         }
 
         public void Publish(Command command)
         {
             foreach (var commandHandler in commandHandlers)
             {
-                eventAggregateCommandHandler.Handle(commandHandler, command);
+                eventStoreCommandHandler.Handle(commandHandler, command);
             }
         }
 

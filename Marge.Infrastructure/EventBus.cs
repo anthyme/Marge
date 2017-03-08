@@ -5,20 +5,20 @@ namespace Marge.Infrastructure
 {
     public interface IEventBus
     {
-        void Publish(EventWrapper @event);
-        void Subscribe<T>(Action<EventWrapper, T> subscription) where T : Event;
+        void Publish(WrappedEvent @event);
+        void Subscribe<T>(Action<WrappedEvent, T> subscription) where T : Event;
     }
 
     public class EventBus : IEventBus
     {
         private readonly IDictionary<Type, List<Action<object>>> subscriptions = new Dictionary<Type, List<Action<object>>>();
 
-        public void Publish(EventWrapper @event)
+        public void Publish(WrappedEvent @event)
         {
             subscriptions[@event.Event.GetType()].ForEach(subscription => subscription(@event));
         }
 
-        public void Subscribe<T>(Action<EventWrapper, T> subscription) where T : Event
+        public void Subscribe<T>(Action<WrappedEvent, T> subscription) where T : Event
         {
             if (!subscriptions.ContainsKey(typeof(T)))
             {
@@ -27,7 +27,7 @@ namespace Marge.Infrastructure
 
             subscriptions[typeof(T)].Add(x =>
             {
-                var evt = (EventWrapper) x;
+                var evt = (WrappedEvent) x;
                 subscription(evt, (T) evt.Event);
             });
         }

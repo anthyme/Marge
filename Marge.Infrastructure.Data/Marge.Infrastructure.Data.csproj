@@ -45,9 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EventAggregateCommandHandler.cs" />
-    <Compile Include="EventStore.cs" />
-    <Compile Include="EventStoreStream.cs" />
+    <Compile Include="EventStoreCommandHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
