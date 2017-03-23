@@ -39,7 +39,7 @@
             },
             changeDiscount(price) {
                 this.$http.put('http://localhost:49842/api/price/' + price.id, { discount: price.discount })
-                    .then(this.fetchPrices)
+                    .then()
             },
             deletePrice(price) {
                 this.$http.delete('http://localhost:49842/api/price/' + price.id)
